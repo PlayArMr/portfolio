@@ -1,9 +1,410 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Mrudul Kulkarni</title>
-  </head>
-  <body>
-    <h1>What hath god wrought</h1>
-  </body>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mrudul Kulkarni</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --cyan: #00ffe7;
+      --magenta: #ff2d78;
+      --yellow: #ffe600;
+      --bg: #060610;
+      --bg2: #0a0a1a;
+      --text: #c8d6e5;
+      --grid: rgba(0,255,231,0.04);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Share Tech Mono', monospace;
+      overflow: hidden;
+    }
+
+    /* Scanlines */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.15) 2px,
+        rgba(0,0,0,0.15) 4px
+      );
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    /* Grid background */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    canvas#glitch-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      opacity: 0.18;
+    }
+
+    .container {
+      position: relative;
+      z-index: 10;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 0 8vw;
+    }
+
+    /* Top bar */
+    .topbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 20;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 8vw;
+      border-bottom: 1px solid rgba(0,255,231,0.12);
+      background: rgba(6,6,16,0.85);
+      backdrop-filter: blur(4px);
+    }
+
+    .topbar-left {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.65rem;
+      color: rgba(0,255,231,0.4);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .topbar-right {
+      font-size: 0.65rem;
+      color: rgba(0,255,231,0.3);
+      letter-spacing: 0.15em;
+    }
+
+    .blink {
+      animation: blink 1.2s step-end infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* Main name */
+    .name-block {
+      margin-bottom: 2.5rem;
+    }
+
+    .name-pre {
+      font-size: 0.7rem;
+      color: var(--magenta);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.3s;
+    }
+
+    .name {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(2.8rem, 7vw, 6rem);
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      color: #fff;
+      text-shadow:
+        0 0 20px rgba(0,255,231,0.6),
+        0 0 60px rgba(0,255,231,0.2);
+      opacity: 0;
+      animation: fadeUp 0.7s ease forwards 0.5s;
+      position: relative;
+    }
+
+    .name .accent {
+      color: var(--cyan);
+    }
+
+    /* Glitch effect on name */
+    .name::before,
+    .name::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+    }
+    .name::before {
+      color: var(--magenta);
+      animation: glitch1 4s infinite;
+      clip-path: polygon(0 30%, 100% 30%, 100% 50%, 0 50%);
+    }
+    .name::after {
+      color: var(--cyan);
+      animation: glitch2 4s infinite;
+      clip-path: polygon(0 60%, 100% 60%, 100% 75%, 0 75%);
+    }
+
+    @keyframes glitch1 {
+      0%, 90%, 100% { transform: translate(0); opacity: 0; }
+      92% { transform: translate(-3px, 1px); opacity: 0.7; }
+      94% { transform: translate(3px, -1px); opacity: 0.7; }
+      96% { transform: translate(0); opacity: 0; }
+    }
+    @keyframes glitch2 {
+      0%, 90%, 100% { transform: translate(0); opacity: 0; }
+      93% { transform: translate(3px, 2px); opacity: 0.7; }
+      95% { transform: translate(-3px, -2px); opacity: 0.7; }
+      97% { transform: translate(0); opacity: 0; }
+    }
+
+    /* Divider */
+    .divider {
+      width: 0;
+      height: 1px;
+      background: linear-gradient(90deg, var(--cyan), var(--magenta), transparent);
+      margin-bottom: 2rem;
+      animation: expandLine 0.8s ease forwards 1s;
+    }
+    @keyframes expandLine {
+      to { width: min(500px, 60vw); }
+    }
+
+    /* Tagline */
+    .tagline {
+      font-size: 0.85rem;
+      color: rgba(200,214,229,0.6);
+      letter-spacing: 0.15em;
+      margin-bottom: 3rem;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 1.1s;
+    }
+
+    .tagline .highlight {
+      color: var(--yellow);
+    }
+
+    /* Big quote */
+    .quote {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(0.9rem, 2.2vw, 1.4rem);
+      font-weight: 700;
+      color: rgba(0,255,231,0.85);
+      letter-spacing: 0.08em;
+      margin-bottom: 3.5rem;
+      border-left: 3px solid var(--magenta);
+      padding-left: 1.2rem;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 1.3s;
+      max-width: 600px;
+    }
+
+    /* Links */
+    .links {
+      display: flex;
+      gap: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 1.5s;
+      flex-wrap: wrap;
+    }
+
+    .link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.7rem 1.4rem;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.8rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: 1px solid;
+      position: relative;
+      transition: all 0.2s ease;
+      overflow: hidden;
+    }
+
+    .link-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      transform: translateX(-100%);
+      transition: transform 0.25s ease;
+    }
+
+    .link-btn:hover::before { transform: translateX(0); }
+    .link-btn:hover { color: var(--bg); }
+
+    .link-btn.github {
+      color: var(--cyan);
+      border-color: var(--cyan);
+      box-shadow: 0 0 12px rgba(0,255,231,0.15);
+    }
+    .link-btn.github::before { background: var(--cyan); }
+    .link-btn.github:hover { box-shadow: 0 0 24px rgba(0,255,231,0.4); }
+
+    .link-btn.linkedin {
+      color: var(--magenta);
+      border-color: var(--magenta);
+      box-shadow: 0 0 12px rgba(255,45,120,0.15);
+    }
+    .link-btn.linkedin::before { background: var(--magenta); }
+    .link-btn.linkedin:hover { box-shadow: 0 0 24px rgba(255,45,120,0.4); }
+
+    .link-btn span { position: relative; z-index: 1; }
+
+    /* Corner decorations */
+    .corner {
+      position: fixed;
+      width: 60px;
+      height: 60px;
+      z-index: 15;
+    }
+    .corner::before, .corner::after {
+      content: '';
+      position: absolute;
+      background: var(--cyan);
+    }
+    .corner::before { width: 100%; height: 1px; }
+    .corner::after { width: 1px; height: 100%; }
+
+    .corner-tl { top: 20px; left: 20px; }
+    .corner-tr { top: 20px; right: 20px; transform: scaleX(-1); }
+    .corner-bl { bottom: 20px; left: 20px; transform: scaleY(-1); }
+    .corner-br { bottom: 20px; right: 20px; transform: scale(-1); }
+
+    /* Bottom status bar */
+    .statusbar {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      z-index: 20;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.6rem 8vw;
+      border-top: 1px solid rgba(0,255,231,0.1);
+      background: rgba(6,6,16,0.85);
+      font-size: 0.6rem;
+      color: rgba(0,255,231,0.25);
+      letter-spacing: 0.2em;
+    }
+
+    .status-dot {
+      display: inline-block;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--cyan);
+      margin-right: 0.5rem;
+      box-shadow: 0 0 6px var(--cyan);
+      animation: pulse 2s ease infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="glitch-bg"></canvas>
+
+  <!-- Corners -->
+  <div class="corner corner-tl"></div>
+  <div class="corner corner-tr"></div>
+  <div class="corner corner-bl"></div>
+  <div class="corner corner-br"></div>
+
+  <!-- Top bar -->
+  <div class="topbar">
+    <div class="topbar-left">MK // v1.0.0</div>
+    <div class="topbar-right"><span class="blink">█</span> ONLINE</div>
+  </div>
+
+  <!-- Main content -->
+  <div class="container">
+    <div class="name-block">
+      <div class="name-pre">// identity.resolve()</div>
+      <div class="name" data-text="MRUDUL KULKARNI">
+        MRUDUL <span class="accent">KULKARNI</span>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="tagline">
+      <span class="highlight">BACKEND_ENG</span> &nbsp;·&nbsp; CSE @ MESCOE &nbsp;·&nbsp; PUNE, IN
+    </div>
+
+    <div class="quote">"What hath god wrought"</div>
+
+    <div class="links">
+      <a href="https://www.github.com/PlayArMr" target="_blank" class="link-btn github">
+        <span>⌥ GitHub</span>
+      </a>
+      <a href="https://www.linkedin.com/in/kulkarni-mrudul/" target="_blank" class="link-btn linkedin">
+        <span>⌥ LinkedIn</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Status bar -->
+  <div class="statusbar">
+    <div><span class="status-dot"></span>SYS_NOMINAL</div>
+    <div>NASHIK → PUNE → WORLD</div>
+    <div>2026.CE</div>
+  </div>
+
+  <script>
+    // Animated particle/rain background
+    const canvas = document.getElementById('glitch-bg');
+    const ctx = canvas.getContext('2d');
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノ'.split('');
+    const cols = Math.floor(window.innerWidth / 20);
+    const drops = Array(cols).fill(0).map(() => Math.random() * -50);
+
+    function draw() {
+      ctx.fillStyle = 'rgba(6,6,16,0.05)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#00ffe7';
+      ctx.font = '14px Share Tech Mono, monospace';
+
+      drops.forEach((y, i) => {
+        const char = chars[Math.floor(Math.random() * chars.length)];
+        ctx.fillText(char, i * 20, y * 20);
+        if (y * 20 > canvas.height && Math.random() > 0.975) drops[i] = 0;
+        drops[i] += 0.5;
+      });
+    }
+
+    setInterval(draw, 50);
+  </script>
+</body>
 </html>
