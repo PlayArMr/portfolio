@@ -1,8 +1,107 @@
-<html>
-    <head>
-        <title>Hello, World!</title>
-    </head>
-    <body>
-        <i>And Now I am become death, the destroyer of worlds</i>
-    </body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mrudul_kulkarni@blog:~$</title>
+    <style>
+        :root {
+            --term-color: #00ff00;
+            --bg-color: #0c0c0c;
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--term-color);
+            font-family: 'Courier New', Courier, monospace;
+            padding: 2rem;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        ::selection {
+            background: var(--term-color);
+            color: var(--bg-color);
+        }
+        a {
+            color: var(--term-color);
+            text-decoration: none;
+            border-bottom: 1px dashed var(--term-color);
+            transition: all 0.2s ease;
+        }
+        a:hover {
+            background-color: var(--term-color);
+            color: var(--bg-color);
+        }
+        .prompt {
+            font-weight: bold;
+        }
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 1.2em;
+            background-color: var(--term-color);
+            animation: blink 1s step-end infinite;
+            vertical-align: text-bottom;
+        }
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+        .header {
+            border-bottom: 1px solid var(--term-color);
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+        }
+        .post-list {
+            margin-top: 1.5rem;
+        }
+        .post-item {
+            margin-bottom: 1.5rem;
+            display: flex;
+            flex-direction: column;
+        }
+        .date {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-bottom: 0.2rem;
+        }
+        .excerpt {
+            margin-top: 0.5rem;
+            font-size: 0.95em;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1><span class="prompt">root@system:~/blog$</span> cat intro.txt</h1>
+        <p>Welcome to the mainframe. Philosophy, linguistics, and speculative fiction loaded.</p>
+    </div>
+
+    <div class="content">
+        <h2><span class="prompt">root@system:~/blog/posts$</span> ls -la</h2>
+
+        <div class="post-list">
+            <div class="post-item">
+                <span class="date">drwxr-xr-x  [2026-05-31]</span>
+                <a href="#post1">The Linguistics of Spellcasting.md</a>
+                <span class="excerpt">An analysis of incantation syntax and semantic decay over time...</span>
+            </div>
+
+            <div class="post-item">
+                <span class="date">drwxr-xr-x  [2026-05-14]</span>
+                <a href="#post2">Determinism in High Fantasy.md</a>
+                <span class="excerpt">A philosophical deep dive into the illusion of choice when prophecies exist.</span>
+            </div>
+
+            <div class="post-item">
+                <span class="date">drwxr-xr-x  [2026-04-28]</span>
+                <a href="#post3">Hello World.md</a>
+                <span class="excerpt">System initialized. First log entry.</span>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top: 3rem;">
+        <span class="prompt">root@system:~/blog$</span> <span class="cursor"></span>
+    </div>
+</body>
 </html>
