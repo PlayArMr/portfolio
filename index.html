@@ -12,6 +12,7 @@
     --bg: #0e0e0e; --bg2: #1c1c1c; --fg: #d4d4d4; --dim: #555;
     --green: #a6e3a1; --blue: #89b4fa; --purple: #cba6f7;
     --yellow: #f9e2af; --cyan: #89dceb; --orange: #fab387;
+    --pink: #f38ba8;
     --border: #2a2a2a; --cursor: #cba6f7;
   }
 
@@ -19,6 +20,7 @@
     --bg: #eaecee; --bg2: #dde0e4; --fg: #1a1a1a; --dim: #888;
     --green: #1e6b2e; --blue: #1a4f9c; --purple: #5a2d9a;
     --yellow: #7a5a00; --cyan: #0e6878; --orange: #b04e00;
+    --pink: #a3003e;
     --border: #c4c8ce; --cursor: #5a2d9a;
   }
 
@@ -85,7 +87,9 @@
   .link-row:hover .link-name, .link-row:active .link-name { color: var(--fg); font-weight: 500; }
 
   .link-icon { font-size: 13px; flex-shrink: 0; }
-  .icon-github { color: var(--fg); } .icon-linkedin { color: var(--blue); } .icon-blog { color: var(--orange); }
+  .icon-github { color: var(--fg); } .icon-linkedin { color: var(--blue); }
+  .icon-blog { color: var(--orange); } .icon-x { color: var(--fg); }
+  .icon-mail { color: var(--pink); }
 
   .link-info { display: flex; flex-direction: column; min-width: 0; flex: 1; gap: 1px; }
   .link-name { font-size: clamp(12px, 2.8vw, 13.5px); color: var(--fg); font-weight: 400; transition: color 0.15s; }
@@ -108,6 +112,10 @@
   .wk { color: var(--cyan); white-space: nowrap; } .wv { color: var(--fg); word-break: break-word; }
 
   .readme { font-size: clamp(11px, 2.6vw, 13px); line-height: 1.85; padding-left: 4px; margin-top: 6px; margin-bottom: 16px; }
+
+  .clock-block { display: grid; grid-template-columns: auto 1fr; gap: 3px 12px; margin: 4px 0; font-size: clamp(10.5px, 2.5vw, 12.5px); }
+  .ck { color: var(--purple); white-space: nowrap; } .cv { color: var(--fg); font-variant-numeric: tabular-nums; }
+  .lmt-note { color: var(--dim); font-size: 0.85em; margin-left: 6px; }
 
   a { text-decoration: none; }
 </style>
@@ -150,7 +158,7 @@
     </div>
 
     <div class="line gap-sm">
-      <span class="comment"># 3 active · all systems go</span>
+      <span class="comment"># 5 active · all systems go</span>
     </div>
 
     <a class="link-row" href="https://github.com/PlayArMr" target="_blank" rel="noopener">
@@ -177,6 +185,18 @@
       </div>
     </a>
 
+    <a class="link-row" href="https://x.com/PlayArMr2" target="_blank" rel="noopener">
+      <span class="link-icon icon-x">✕</span>
+      <div class="link-info">
+        <span class="link-name">x</span>
+        <span class="link-url">x.com/PlayArMr2</span>
+      </div>
+      <div class="link-right">
+        <span class="badge badge-active">active</span>
+        <span class="link-arrow">→</span>
+      </div>
+    </a>
+
     <a class="link-row" href="./page2.html">
       <span class="link-icon icon-blog">◈</span>
       <div class="link-info">
@@ -188,6 +208,34 @@
         <span class="link-arrow">→</span>
       </div>
     </a>
+
+    <a class="link-row" href="mailto:dev.playarmr@protonmail.com">
+      <span class="link-icon icon-mail">✉</span>
+      <div class="link-info">
+        <span class="link-name">email</span>
+        <span class="link-url">dev.playarmr@protonmail.com</span>
+      </div>
+      <div class="link-right">
+        <span class="badge badge-active">active</span>
+        <span class="link-arrow">→</span>
+      </div>
+    </a>
+
+    <hr class="divider">
+
+    <div class="line gap-sm">
+      <div class="prompt">
+        <span class="ps-bracket">(</span><span class="ps-user">mrudul</span><span class="ps-at">@</span><span class="ps-host">kulkarni</span><span class="ps-bracket">)&nbsp;</span><span class="ps-bracket">[</span><span class="ps-path">~</span><span class="ps-bracket">]&nbsp;</span><span class="ps-arrow">❯&nbsp;</span><span class="ps-cmd">date --all-zones</span>
+      </div>
+    </div>
+
+    <div class="line gap-sm">
+      <div class="clock-block">
+        <span class="ck">IST</span><span class="cv" id="clock-ist">--:--:--</span>
+        <span class="ck">LMT</span><span class="cv" id="clock-lmt">--:--:--</span>
+        <span class="ck">UTC</span><span class="cv" id="clock-utc">--:--:--</span>
+      </div>
+    </div>
 
     <hr class="divider">
 
@@ -216,6 +264,41 @@
     body.classList.toggle('light');
     btn.textContent = body.classList.contains('light') ? '[ dark ]' : '[ invert ]';
   }
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  function formatTime(date, offsetMinutes) {
+    const utcMs = date.getTime() + date.getTimezoneOffset() * 60000;
+    const local = new Date(utcMs + offsetMinutes * 60000);
+    return pad(local.getHours()) + ':' + pad(local.getMinutes()) + ':' + pad(local.getSeconds());
+  }
+
+  function getUTC(date) {
+    return pad(date.getUTCHours()) + ':' + pad(date.getUTCMinutes()) + ':' + pad(date.getUTCSeconds());
+  }
+
+  let userLongitude = 73.8567;
+
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(pos) {
+      userLongitude = pos.coords.longitude;
+    });
+  }
+
+  function updateClocks() {
+    const now = new Date();
+    const solarOffsetMinutes = (userLongitude / 15) * 60;
+    const diffMin = Math.round(solarOffsetMinutes - 330);
+    const sign = diffMin >= 0 ? '+' : '-';
+    const note = Math.abs(diffMin) > 0 ? ' <span style="color:var(--dim);font-size:0.85em">IST' + sign + Math.abs(diffMin) + 'm</span>' : '';
+
+    document.getElementById('clock-ist').textContent = formatTime(now, 330);
+    document.getElementById('clock-lmt').innerHTML = formatTime(now, solarOffsetMinutes) + note;
+    document.getElementById('clock-utc').textContent = getUTC(now);
+  }
+
+  updateClocks();
+  setInterval(updateClocks, 1000);
 </script>
 </body>
 </html>
