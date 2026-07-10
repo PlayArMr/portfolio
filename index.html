@@ -209,11 +209,11 @@
       </div>
     </a>
 
-    <a class="link-row" href="mailto:dev.playarmr@protonmail.com">
+    <a class="link-row" id="email-link" href="#">
       <span class="link-icon icon-mail">✉</span>
       <div class="link-info">
         <span class="link-name">email</span>
-        <span class="link-url">dev.playarmr@protonmail.com</span>
+        <span class="link-url" id="email-display">···@···</span>
       </div>
       <div class="link-right">
         <span class="badge badge-active">active</span>
@@ -232,7 +232,6 @@
     <div class="line gap-sm">
       <div class="clock-block">
         <span class="ck">IST</span><span class="cv" id="clock-ist">--:--:--</span>
-        <span class="ck">LMT</span><span class="cv" id="clock-lmt">--:--:--</span>
         <span class="ck">UTC</span><span class="cv" id="clock-utc">--:--:--</span>
       </div>
     </div>
@@ -277,28 +276,25 @@
     return pad(date.getUTCHours()) + ':' + pad(date.getUTCMinutes()) + ':' + pad(date.getUTCSeconds());
   }
 
-  let userLongitude = 73.8567;
-
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function(pos) {
-      userLongitude = pos.coords.longitude;
-    });
-  }
-
   function updateClocks() {
     const now = new Date();
-    const solarOffsetMinutes = (userLongitude / 15) * 60;
-    const diffMin = Math.round(solarOffsetMinutes - 330);
-    const sign = diffMin >= 0 ? '+' : '-';
-    const note = Math.abs(diffMin) > 0 ? ' <span style="color:var(--dim);font-size:0.85em">IST' + sign + Math.abs(diffMin) + 'm</span>' : '';
-
     document.getElementById('clock-ist').textContent = formatTime(now, 330);
-    document.getElementById('clock-lmt').innerHTML = formatTime(now, solarOffsetMinutes) + note;
     document.getElementById('clock-utc').textContent = getUTC(now);
   }
 
   updateClocks();
   setInterval(updateClocks, 1000);
+
+  // build email at runtime — keeps it out of raw HTML for basic scraper deterrence
+  (function() {
+    const user = 'dev.playarmr';
+    const domain = 'protonmail.com';
+    const addr = user + '@' + domain;
+    const link = document.getElementById('email-link');
+    const display = document.getElementById('email-display');
+    link.href = 'mailto:' + addr;
+    display.textContent = addr;
+  })();
 </script>
 </body>
 </html>
