@@ -90,14 +90,22 @@
     text-decoration: none;
   }
   .post-row:hover, .post-row:active { border-left-color: var(--purple); background: rgba(203,166,247,0.06); }
-  .post-row:hover .post-title, .post-row:active .post-title { color: #fff; }
-  body.light .post-row:hover .post-title, body.light .post-row:active .post-title { color: #000; }
 
   .post-meta { font-size: clamp(9.5px, 2.2vw, 11px); color: var(--dim); }
   .post-perm { color: var(--cyan); margin-right: 8px; }
   .post-date { color: var(--dim); }
 
-  .post-title { font-size: clamp(12px, 2.8vw, 13.5px); color: var(--fg); font-weight: 500; transition: color 0.15s; }
+  .post-title {
+    display: inline-block;
+    font-size: clamp(12px, 2.8vw, 13.5px); color: var(--fg); font-weight: 600;
+    padding: 5px 12px; border: 1px solid var(--border); border-radius: 5px;
+    background: var(--bg2);
+    transition: color 0.15s, background 0.15s, border-color 0.15s, transform 0.1s;
+  }
+  .post-row:hover .post-title, .post-row:active .post-title {
+    background: var(--purple); border-color: var(--purple); color: #0e0e0e;
+  }
+  .post-row:active .post-title { transform: scale(0.97); }
 
   .post-desc { font-size: clamp(10px, 2.4vw, 12px); color: var(--dim); margin-top: 1px; }
 
@@ -118,16 +126,6 @@
     transition: color 0.15s;
   }
   .back-link:hover { color: var(--purple); }
-
-  .error-block {
-    display: none; margin-top: 8px;
-    font-size: clamp(10.5px, 2.5vw, 12.5px);
-    padding-left: 4px;
-  }
-  .error-block.visible { display: block; }
-  .err-cmd { color: var(--fg); margin-bottom: 4px; }
-  .err-msg { color: var(--red); }
-  .err-hint { color: var(--dim); margin-top: 2px; }
 
   a { text-decoration: none; }
 </style>
@@ -171,52 +169,19 @@
     </div>
 
     <div class="line gap-sm">
-      <span class="comment"># 3 entries · sorted by date desc</span>
+      <span class="comment"># 1 entry · sorted by date desc</span>
     </div>
 
-    <div class="post-row" onclick="showError('The Linguistics of Spellcasting.md')">
+    <a class="post-row" href="./posts/a-solution-to-data-degradation.html">
       <div class="post-meta">
-        <span class="post-perm">drwxr-xr-x</span>
-        <span class="post-date">[2026-05-31]</span>
+        <span class="post-perm">-rw-r--r--</span>
+        <span class="post-date">[2026-07-14]</span>
       </div>
       <div class="post-header">
-        <span class="post-title">The Linguistics of Spellcasting.md</span>
+        <span class="post-title">A solution to data degradation.md</span>
         <span class="post-arrow">→</span>
       </div>
-      <span class="post-desc">An analysis of incantation syntax and semantic decay over time...</span>
-    </div>
-
-    <div class="post-row" onclick="showError('Determinism in High Fantasy.md')">
-      <div class="post-meta">
-        <span class="post-perm">drwxr-xr-x</span>
-        <span class="post-date">[2026-05-14]</span>
-      </div>
-      <div class="post-header">
-        <span class="post-title">Determinism in High Fantasy.md</span>
-        <span class="post-arrow">→</span>
-      </div>
-      <span class="post-desc">A philosophical deep dive into the illusion of choice when prophecies exist.</span>
-    </div>
-
-    <div class="post-row" onclick="showError('Hello World.md')">
-      <div class="post-meta">
-        <span class="post-perm">drwxr-xr-x</span>
-        <span class="post-date">[2026-04-28]</span>
-      </div>
-      <div class="post-header">
-        <span class="post-title">Hello World.md</span>
-        <span class="post-arrow">→</span>
-      </div>
-      <span class="post-desc">System initialized. First log entry.</span>
-    </div>
-
-    <div class="error-block" id="errorBlock">
-      <div class="prompt err-cmd">
-        <span class="ps-bracket">(</span><span class="ps-user">mrudul</span><span class="ps-at">@</span><span class="ps-host">kulkarni</span><span class="ps-bracket">)&nbsp;</span><span class="ps-bracket">[</span><span class="ps-path">~/blog</span><span class="ps-bracket">]&nbsp;</span><span class="ps-arrow">❯&nbsp;</span><span class="ps-cmd" id="errorCmd"></span>
-      </div>
-      <div class="err-msg" id="errorMsg"></div>
-      <div class="err-hint">// post not yet written. check back later.</div>
-    </div>
+    </a>
 
     <hr class="divider">
 
@@ -233,14 +198,6 @@
     const btn = document.getElementById('toggleBtn');
     body.classList.toggle('light');
     btn.textContent = body.classList.contains('light') ? '[ dark ]' : '[ invert ]';
-  }
-
-  function showError(filename) {
-    const block = document.getElementById('errorBlock');
-    document.getElementById('errorCmd').textContent = 'cat "./posts/' + filename + '"';
-    document.getElementById('errorMsg').textContent = 'cat: ' + filename + ': No such file or directory';
-    block.classList.add('visible');
-    setTimeout(() => block.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
   }
 </script>
 </body>
