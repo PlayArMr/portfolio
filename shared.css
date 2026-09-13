@@ -750,6 +750,64 @@ button {
   display: block;
 }
 
+/* Fastfetch Spec Display */
+.fastfetch-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  padding: 0.35rem 0;
+}
+
+.fastfetch-logo {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: pre;
+  user-select: none;
+  font-size: 0.875rem;
+  margin: 0;
+  padding: 0;
+  color: var(--cyan);
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
+}
+
+.fastfetch-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.ff-key {
+  color: var(--cyan);
+  font-weight: 600;
+  display: inline-block;
+  min-width: 80px;
+}
+
+.ff-val {
+  color: var(--fg);
+}
+
+[data-theme="light"] .fastfetch-logo {
+  text-shadow: none;
+}
+
+[data-theme="light"] .fastfetch-logo span {
+  color: #6290C3 !important;
+}
+
+[data-theme="light"] .ff-key {
+  color: #6290C3;
+}
+
+[data-theme="light"] .ff-val {
+  color: #14110F;
+}
+
 /* ==========================================================================
    Widget Sections: Writing & Projects (Max Leiter Style)
    ========================================================================== */

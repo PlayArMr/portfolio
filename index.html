@@ -239,7 +239,7 @@
             <!-- Interactive CLI Prompt -->
             <div class="interactive-cli">
               <span class="prompt-arrow">❯</span>
-              <input type="text" id="cli-input" placeholder="Type 'help', 'projects', 'about', or 'theme'..." autocomplete="off" spellcheck="false">
+              <input type="text" id="cli-input" placeholder="Type 'fastfetch', 'help', 'about', or 'theme'..." autocomplete="off" spellcheck="false">
               <span class="cursor-blink"></span>
             </div>
             <div class="cli-output" id="cli-output"></div>
@@ -478,6 +478,7 @@
         switch (action) {
           case 'help':
             res = `<div style="color:var(--cyan)">Available commands:</div>
+            <div>&bull; <strong>fastfetch</strong>: Display system specifications &amp; host stats</div>
             <div>&bull; <strong>help</strong>: Show this message</div>
             <div>&bull; <strong>whoami</strong>: Display system &amp; user profile</div>
             <div>&bull; <strong>about</strong> / <strong>cat about</strong>: Read ABOUT.md in modal</div>
@@ -489,6 +490,44 @@
             <div>&bull; <strong>contact</strong>: Show email address</div>
             <div>&bull; <strong>clear</strong>: Clear terminal history</div>
             <div>&bull; <strong>matrix</strong>: Wake up, Neo...</div>`;
+            break;
+
+          case 'fastfetch':
+          case 'neofetch':
+          case 'fetch':
+            res = `
+            <div class="fastfetch-container">
+              <pre class="fastfetch-logo" aria-hidden="true"><span style="color:var(--cyan)">      /\\
+     /  \\
+    /\\   \\
+   /      \\
+</span><span style="color:var(--blue)">  /   ,,   \\
+ /   |  |  -\\
+/_-''    ''-_\\</span></pre>
+              <div class="fastfetch-info">
+                <div><span style="color:var(--cyan); font-weight:700;">MrudulKulkarni</span><span style="color:var(--fg-dim);">@</span><span style="color:var(--purple); font-weight:700;">Caraxes</span></div>
+                <div style="color:var(--border-subtle); line-height:1; margin-bottom:4px;">---------------------</div>
+                <div><span class="ff-key">OS:</span> <span class="ff-val">Arch Linux x86_64</span></div>
+                <div><span class="ff-key">Host:</span> <span class="ff-val">Caraxes Workstation (Custom Build)</span></div>
+                <div><span class="ff-key">Kernel:</span> <span class="ff-val">Linux 6.10.9-zen1-1-zen</span></div>
+                <div><span class="ff-key">Uptime:</span> <span class="ff-val">23 days, 14 hours, 42 mins</span></div>
+                <div><span class="ff-key">Packages:</span> <span class="ff-val">1142 (pacman), 28 (cargo)</span></div>
+                <div><span class="ff-key">Shell:</span> <span class="ff-val">zsh 5.9</span></div>
+                <div><span class="ff-key">Display:</span> <span class="ff-val">2560x1440 @ 165Hz</span></div>
+                <div><span class="ff-key">DE/WM:</span> <span class="ff-val">Hyprland (Wayland)</span></div>
+                <div><span class="ff-key">Theme:</span> <span class="ff-val">PlayArMr Cyberpunk / Retro Workstation</span></div>
+                <div><span class="ff-key">Terminal:</span> <span class="ff-val">PlayArMr-WebCLI / kitty</span></div>
+                <div><span class="ff-key">CPU:</span> <span class="ff-val">AMD Ryzen 7 5800X (16) @ 4.70GHz</span></div>
+                <div><span class="ff-key">GPU:</span> <span class="ff-val">NVIDIA GeForce RTX 3070 Ti</span></div>
+                <div><span class="ff-key">Memory:</span> <span class="ff-val">14.2 GiB / 32.0 GiB (44%)</span></div>
+                <div style="margin-top:6px; line-height:1;">
+                  <span style="color:#1e2430">███</span><span style="color:#ff3366">███</span><span style="color:#39ff88">███</span><span style="color:#ffe66d">███</span><span style="color:#00d9ff">███</span><span style="color:#ff2bd6">███</span><span style="color:#00f0ff">███</span><span style="color:#e2f0fc">███</span>
+                </div>
+                <div style="line-height:1;">
+                  <span style="color:#505c70">███</span><span style="color:#ff6688">███</span><span style="color:#66ffaa">███</span><span style="color:#fff099">███</span><span style="color:#66e6ff">███</span><span style="color:#ff66e0">███</span><span style="color:#80f7ff">███</span><span style="color:#ffffff">███</span>
+                </div>
+              </div>
+            </div>`;
             break;
 
           case 'whoami':
@@ -570,6 +609,29 @@
           </div>
           <div style="margin-bottom:0.75rem; padding-left:0.75rem; border-left:2px solid var(--border);">${res}</div>
         `;
+      }
+
+      // Export runner so external UI (e.g. command palette or URL param) can trigger commands
+      if (window.PlayArMr) {
+        window.PlayArMr.runCliCommand = function (commandText) {
+          focusCli();
+          input.value = '';
+          history.push(commandText);
+          historyIdx = history.length;
+          handleCommand(commandText);
+          output.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        };
+      }
+    })();
+
+    // Check for ?cmd=... in URL to automatically run on load
+    (function checkUrlCommand() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const initialCmd = urlParams.get('cmd');
+      if (initialCmd && window.PlayArMr && typeof window.PlayArMr.runCliCommand === 'function') {
+        setTimeout(() => {
+          window.PlayArMr.runCliCommand(initialCmd);
+        }, 150);
       }
     })();
 

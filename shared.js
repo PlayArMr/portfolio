@@ -292,6 +292,14 @@
     }
   }
 
+  function runTerminalCommand(cmd) {
+    if (window.PlayArMr && typeof window.PlayArMr.runCliCommand === 'function') {
+      window.PlayArMr.runCliCommand(cmd);
+    } else {
+      window.location.href = `./index.html?cmd=${encodeURIComponent(cmd)}`;
+    }
+  }
+
   // --- 7. Command Palette Database & Modal ---
   const PALETTE_DATA = [
     { category: 'Navigation', title: '~ (Desktop Home)', url: './index.html', icon: '⌂', badge: 'Page' },
@@ -307,6 +315,7 @@
     { category: 'Social & Connect', title: 'X / Twitter (@PlayArMr2)', url: 'https://x.com/PlayArMr2', icon: '↗', badge: 'External' },
     { category: 'Social & Connect', title: 'Email (dev.playarmr@protonmail.com)', action: copyEmail, icon: '✉', badge: 'Copy' },
 
+    { category: 'System Actions', title: 'fastfetch (System Specs & Host Info)', action: () => runTerminalCommand('fastfetch'), icon: '⚡', badge: 'CLI' },
     { category: 'System Actions', title: 'Toggle Theme (Dark / Light)', action: toggleTheme, icon: '◐', badge: 'Action' },
     { category: 'System Actions', title: 'Toggle CRT Scanline Effect', action: toggleCRT, icon: '📺', badge: 'Action' },
     { category: 'System Actions', title: 'Copy Email to Clipboard', action: copyEmail, icon: '📋', badge: 'Action' }
