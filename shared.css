@@ -1706,3 +1706,174 @@ button {
 [data-theme="light"] .article-accent {
   color: #6290C3;
 }
+
+/* ==========================================================================
+   Bad Apple Theme Transition Overlay
+   ========================================================================== */
+.theme-transition-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #030508;
+  color: #ffffff;
+  opacity: 1;
+  transition: opacity 0.15s ease-out, background-color 0.1s linear, color 0.1s linear;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Direction 1: starting in dark mode (from-dark) */
+.theme-transition-overlay.from-dark {
+  background-color: #030508;
+  color: #ffffff;
+}
+.theme-transition-overlay.from-dark.inverted {
+  background-color: #FFEAEC;
+  color: #14110F;
+}
+
+/* Direction 2: starting in light mode (from-light) */
+.theme-transition-overlay.from-light {
+  background-color: #FFEAEC;
+  color: #14110F;
+}
+.theme-transition-overlay.from-light.inverted {
+  background-color: #030508;
+  color: #ffffff;
+}
+
+.theme-transition-scanlines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%),
+              linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+  background-size: 100% 3px, 4px 100%;
+  opacity: 0.6;
+}
+
+.theme-transition-box {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.25rem 2rem;
+  background: rgba(8, 14, 24, 0.9);
+  border: 1px solid var(--cyan);
+  border-radius: 8px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 240, 255, 0.25);
+  max-width: 92vw;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: all 0.1s linear;
+}
+
+.theme-transition-overlay.from-dark.inverted .theme-transition-box,
+.theme-transition-overlay.from-light:not(.inverted) .theme-transition-box {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #6290C3;
+  box-shadow: 0 20px 60px rgba(20, 17, 15, 0.2), 0 0 30px rgba(98, 144, 195, 0.35);
+}
+
+.theme-transition-overlay.from-light.inverted .theme-transition-box {
+  background: rgba(8, 14, 24, 0.9);
+  border: 1px solid var(--cyan);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 240, 255, 0.25);
+}
+
+.theme-transition-hud {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+}
+
+.theme-transition-hud.hud-top {
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 0.45rem;
+  margin-bottom: 0.75rem;
+  opacity: 0.8;
+}
+
+.theme-transition-hud.hud-bottom {
+  border-top: 1px solid currentColor;
+  padding-top: 0.45rem;
+  margin-top: 0.75rem;
+  flex-direction: column;
+  gap: 0.25rem;
+  text-align: center;
+  opacity: 0.85;
+}
+
+.hud-tag {
+  color: var(--cyan);
+  font-weight: 600;
+}
+
+.theme-transition-overlay.from-dark.inverted .hud-tag,
+.theme-transition-overlay.from-light:not(.inverted) .hud-tag {
+  color: #6290C3;
+}
+
+.theme-transition-overlay.from-light.inverted .hud-tag {
+  color: var(--cyan);
+}
+
+.hud-fps {
+  font-size: 0.65rem;
+  opacity: 0.7;
+}
+
+.hud-rom {
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.theme-transition-ascii {
+  font-family: var(--font-mono);
+  font-size: clamp(7.5px, 2.1vw, 13.5px);
+  line-height: 1.15;
+  white-space: pre;
+  overflow: hidden;
+  text-align: center;
+  margin: 0;
+  padding: 0.4rem 0;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.theme-transition-overlay.from-dark .theme-transition-ascii,
+.theme-transition-overlay.from-light.inverted .theme-transition-ascii {
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.65), 0 0 20px rgba(255, 255, 255, 0.4);
+}
+
+.theme-transition-overlay.from-dark.inverted .theme-transition-ascii,
+.theme-transition-overlay.from-light:not(.inverted) .theme-transition-ascii {
+  text-shadow: 0 0 1px rgba(20, 17, 15, 0.4);
+}
+
+.hud-telemetry {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.hud-skip {
+  font-size: 0.62rem;
+  opacity: 0.6;
+  letter-spacing: 0.04em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-transition-overlay {
+    display: none !important;
+  }
+}

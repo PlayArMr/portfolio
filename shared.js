@@ -7,18 +7,150 @@
   'use strict';
 
   // --- 1. Theme Management ---
+  // Bad Apple Transition Sequence (14 lines x 38 cols)
+  const BAD_APPLE_FRAMES = [
+    // 1. Wireframe
+    "                                      \n                     .---.            \n                    /  /  )           \n           .-------'  /  '--.         \n          /   .------'       \\        \n         /   /                \\       \n        |   |                  |      \n        |   |                  |      \n         \\   \\                /       \n          \\   '--.        .--'        \n           '--.   '------'            \n               '--.____.--'           \n                                      \n                                      ",
+    // 2. Dots
+    "                                      \n                     .---.            \n                    / :|  )           \n           .-------'  :| '--.         \n          /   .------':|     \\        \n         / : : : : : : : : :  \\       \n        | : : : : : : : : : :  |      \n        | : : : : : : : : : :  |      \n         \\ : : : : : : : : :  /       \n          \\ : : : : : : : :  /        \n           '--.   : : :  .--'         \n               '--.____.--'           \n                                      \n                                      ",
+    // 3. Half Fill
+    "                                      \n                     .---.            \n                    / :|  )           \n           .-------'  :| '--.         \n          /   .------':|     \\        \n         /   / : : : : : : :  \\       \n        |   |################# |      \n        |   |################# |      \n         \\   \\################/       \n          \\   '###############        \n           '--.   #######.--'         \n               '--.____.--'           \n                                      \n                                      ",
+    // 4. Solid Bad Apple
+    "                                      \n                     .---.            \n                    / /|  )           \n           .-------' // '--.          \n          / #########//     \\         \n         / ##########/       \\        \n        | #################### |      \n        | #################### |      \n         \\ ###################/       \n          \\ #################/        \n           '--.##########.--'         \n               '--.____.--'           \n                                      \n                                      ",
+    // 5. Rotated Silhouette
+    "                                      \n                        .---.         \n                       / /|  )        \n           .----------' // '--.       \n          / ###########//      \\      \n         / ############/        \\     \n        | #######################|    \n        | #######################|    \n         \\ #####################/     \n          \\ ###################/      \n            '--.##########.--'        \n                '--.____.--'          \n                                      \n                                      ",
+    // 6. Wave Row 5
+    "######################################\n#####################     ############\n#################### #  ## ###########\n###########         #  #    ##########\n########## #           ##### #########\n======================================\n        | #################### |      \n        | #################### |      \n         \\ ###################/       \n          \\ #################/        \n           '--.##########.--'         \n               '--.____.--'           \n                                      \n                                      ",
+    // 7. Wave Row 9
+    "######################################\n#####################     ############\n#################### #  ## ###########\n###########         #  #    ##########\n########## #           ##### #########\n######### #           ####### ########\n######## #                    # ######\n######## #                    # ######\n######### #                    #######\n======================================\n           '--.##########.--'         \n               '--.____.--'           \n                                      \n                                      ",
+    // 8. Full Negative Inversion
+    "######################################\n#####################     ############\n#################### #  ## ###########\n###########         #  #    ##########\n########## #           ##### #########\n######### #           ####### ########\n######## #                    # ######\n######## #                    # ######\n######### #                    #######\n########## #                  ########\n###########                  #########\n###############            ###########\n######################################\n######################################",
+    // 9. Matrix Dissolve
+    " .                .                .  \n                .       :        .    \n              .        :       .      \n             :  :     :  :   .        \n          . :  :  :  :  :  :          \n        .  :  :  :  :  :  :  :        \n      .   :  :  :  :  :  :  :         \n    .       :  :  :  :  :  :         .\n  .           :  :  :  :  :        . \n             :  :  :  :  :       .   \n               :  :  :  :       .     \n             .      :         .       \n           .                .         \n         .                .           "
+  ];
+
+  let isThemeTransitioning = false;
+
   function initTheme() {
     const saved = localStorage.getItem('playarmr-theme') || 'dark';
     document.documentElement.setAttribute('data-theme', saved);
     updateThemeUI(saved);
   }
 
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('playarmr-theme', theme);
+    updateThemeUI(theme);
+  }
+
+  function playBadAppleTransition(fromTheme, toTheme) {
+    isThemeTransitioning = true;
+
+    const overlay = document.createElement('div');
+    overlay.id = 'theme-transition-overlay';
+    overlay.className = `theme-transition-overlay from-${fromTheme}`;
+    overlay.setAttribute('role', 'status');
+    overlay.setAttribute('aria-live', 'polite');
+    overlay.setAttribute('aria-label', `Switching to ${toTheme} theme`);
+
+    overlay.innerHTML = `
+      <div class="theme-transition-scanlines"></div>
+      <div class="theme-transition-box">
+        <div class="theme-transition-hud hud-top">
+          <span class="hud-tag">POLARITY_INVERSION</span>
+          <span class="hud-fps">24_FPS</span>
+          <span class="hud-rom">BAD_APPLE.ROM</span>
+        </div>
+        <pre class="theme-transition-ascii" id="theme-transition-pre" aria-hidden="true"></pre>
+        <div class="theme-transition-hud hud-bottom">
+          <span class="hud-telemetry" id="theme-transition-telemetry">[ ${fromTheme === 'dark' ? '0x00 ➔ 0xFF' : '0xFF ➔ 0x00'} ] OPTICAL BUFFER SYNC</span>
+          <span class="hud-skip">CLICK OR PRESS ANY KEY TO SKIP</span>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(overlay);
+
+    const preEl = overlay.querySelector('#theme-transition-pre');
+    const telEl = overlay.querySelector('#theme-transition-telemetry');
+
+    let currentFrame = 0;
+    if (preEl) {
+      preEl.textContent = BAD_APPLE_FRAMES[0];
+    }
+
+    let cleanedUp = false;
+    function cleanup(forceApply = false) {
+      if (cleanedUp) return;
+      cleanedUp = true;
+      clearInterval(frameInterval);
+      window.removeEventListener('keydown', onKeyDown, true);
+      overlay.removeEventListener('click', onClick);
+
+      if (forceApply) {
+        applyTheme(toTheme);
+      }
+
+      overlay.style.opacity = '0';
+      setTimeout(() => {
+        if (overlay.parentNode) {
+          overlay.remove();
+        }
+        isThemeTransitioning = false;
+      }, 150);
+    }
+
+    function onKeyDown(e) {
+      if (e.key === 'F5' || e.key === 'F12' || (e.ctrlKey && e.key.toLowerCase() === 'r') || (e.metaKey && e.key.toLowerCase() === 'r')) {
+        return;
+      }
+      e.stopPropagation();
+      e.preventDefault();
+      cleanup(true);
+    }
+
+    function onClick() {
+      cleanup(true);
+    }
+
+    window.addEventListener('keydown', onKeyDown, true);
+    overlay.addEventListener('click', onClick);
+
+    const frameInterval = setInterval(() => {
+      currentFrame++;
+
+      // When the wave passes (Frame 6), execute theme switch and invert overlay
+      if (currentFrame === 6) {
+        applyTheme(toTheme);
+        overlay.classList.add('inverted');
+        if (telEl) {
+          telEl.textContent = `[ ${toTheme.toUpperCase()} MODE ACTIVE ] POLARITY INVERTED`;
+        }
+      }
+
+      if (currentFrame < BAD_APPLE_FRAMES.length) {
+        if (preEl) {
+          preEl.textContent = BAD_APPLE_FRAMES[currentFrame];
+        }
+      } else {
+        cleanup(false);
+      }
+    }, 65);
+  }
+
   function toggleTheme() {
+    if (isThemeTransitioning) return;
+
     const current = document.documentElement.getAttribute('data-theme') || 'dark';
     const next = current === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', next);
-    localStorage.setItem('playarmr-theme', next);
-    updateThemeUI(next);
+
+    // If user prefers reduced motion, toggle immediately without animation
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      applyTheme(next);
+      return;
+    }
+
+    playBadAppleTransition(current, next);
   }
 
   function updateThemeUI(theme) {
