@@ -50,44 +50,62 @@
 }
 
 [data-theme="light"] {
-  /* Cyber Sage / High-Tech Crisp Paper Light */
-  --bg: #f4efe6;
-  --bg-alpha: rgba(244, 239, 230, 0.92);
-  --bg-alt: #eae3d5;
-  --bg-window: rgba(255, 255, 255, 0.92);
+  /* ==========================================================================
+     Retro-Futuristic Engineering Workstation / Technical Notebook Light Theme
+     Exact Palette:
+       Primary Blue / Dusty Denim:  #6290C3
+       Soft Background / Blush:     #FFEAEC
+       Deep Ink / Pitch Black:      #14110F
+       Accent Cyan / Icy Aqua:      #B5F8FE
+       Secondary Dark / Graphite:   #34312D
+     ========================================================================== */
+  --bg: #FFEAEC;
+  --bg-alpha: rgba(255, 234, 236, 0.90);
+  --bg-alt: #F4DADB;
+  --bg-window: rgba(255, 245, 246, 0.94);
   --bg-card: rgba(255, 255, 255, 0.85);
   --bg-card-hover: rgba(255, 255, 255, 0.98);
-  --bg-input: rgba(235, 228, 218, 0.9);
+  --bg-input: rgba(244, 218, 220, 0.92);
 
-  --border: rgba(50, 40, 30, 0.14);
-  --border-subtle: rgba(50, 40, 30, 0.08);
-  --border-hover: rgba(50, 40, 30, 0.32);
-  --border-pink: rgba(168, 32, 109, 0.3);
+  /* Deep Ink & Graphite for deliberate high-contrast terminal / code surfaces */
+  --bg-terminal: #14110F;
+  --bg-terminal-header: #34312D;
 
-  --fg: #1e1915;
-  --fg-dim: #6d6154;
-  --fg-faint: #a29587;
+  --border: rgba(98, 144, 195, 0.35);
+  --border-subtle: rgba(52, 49, 45, 0.14);
+  --border-hover: #6290C3;
+  --border-pink: rgba(98, 144, 195, 0.5);
 
-  /* Refined Light Mode Accents */
-  --cyan: #0284c7;
-  --pink: #b81f7c;
-  --green: #15803d;
-  --yellow: #9a6700;
-  --orange: #c2410c;
-  --purple: #7033b2;
-  --red: #be123c;
-  --blue: #0369a1;
+  --fg: #14110F;
+  --fg-dim: #34312D;
+  --fg-faint: #6c655d;
 
-  --accent: var(--cyan);
-  --selection: rgba(2, 132, 199, 0.22);
-  --shadow-window: 0 16px 40px -10px rgba(70, 50, 30, 0.12), 0 0 0 1px var(--border);
+  /* Palette Tokens */
+  --primary-blue: #6290C3;
+  --icy-aqua: #B5F8FE;
+  --deep-ink: #14110F;
+  --graphite: #34312D;
+  --soft-bg: #FFEAEC;
 
-  --badge-bg: rgba(60, 45, 30, 0.06);
-  --badge-border: rgba(60, 45, 30, 0.15);
-  --badge-fg: var(--fg);
+  --cyan: #6290C3;
+  --pink: #6290C3;
+  --green: #6290C3;
+  --yellow: #34312D;
+  --orange: #6290C3;
+  --purple: #6290C3;
+  --red: #c24153;
+  --blue: #6290C3;
 
-  --crt-scanline: transparent;
-  --crt-opacity: 0;
+  --accent: #6290C3;
+  --selection: rgba(98, 144, 195, 0.28);
+  --shadow-window: 0 16px 42px -10px rgba(20, 17, 15, 0.12), 0 0 0 1px var(--border);
+
+  --badge-bg: rgba(98, 144, 195, 0.12);
+  --badge-border: rgba(98, 144, 195, 0.35);
+  --badge-fg: #14110F;
+
+  --crt-scanline: rgba(20, 17, 15, 0.022);
+  --crt-opacity: 0.85;
 }
 
 /* ==========================================================================
@@ -128,7 +146,7 @@ body {
   transition: background-color 0.25s ease, color 0.25s ease;
 }
 
-/* ── Optional CRT Scanlines Shader ──────────────────────────────── */
+/* ── CRT Scanlines Shader (Dark Mode) ────────────────────────────── */
 :root:not([data-theme="light"]) body.crt-active::before {
   content: "";
   position: fixed;
@@ -158,11 +176,26 @@ body {
   );
 }
 
-/* Ensure completely clean canvas without vignette or scanlines in light theme */
-[data-theme="light"] body::before,
-[data-theme="light"] body::after,
-[data-theme="light"] body.crt-active::before,
-[data-theme="light"] body.crt-active::after {
+/* ── CRT Scanlines Shader (Light Mode): Subtle neutral scanlines, NO vignette ── */
+[data-theme="light"] body.crt-active::before {
+  display: block !important;
+  content: "" !important;
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(20, 17, 15, 0.022) 0px,
+    rgba(20, 17, 15, 0.022) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  opacity: 0.85;
+}
+
+[data-theme="light"] body.crt-active::after,
+[data-theme="light"] body::after {
   display: none !important;
   content: none !important;
   opacity: 0 !important;
@@ -940,11 +973,11 @@ button {
   box-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
 }
 
-[data-theme="light"] .heat-cell[data-level="0"] { background: rgba(0, 0, 0, 0.06); border-color: rgba(0, 0, 0, 0.08); }
-[data-theme="light"] .heat-cell[data-level="1"] { background: rgba(2, 132, 199, 0.25); }
-[data-theme="light"] .heat-cell[data-level="2"] { background: rgba(2, 132, 199, 0.5); }
-[data-theme="light"] .heat-cell[data-level="3"] { background: rgba(2, 132, 199, 0.75); }
-[data-theme="light"] .heat-cell[data-level="4"] { background: var(--cyan); box-shadow: none; }
+[data-theme="light"] .heat-cell[data-level="0"] { background: rgba(52, 49, 45, 0.08); border-color: rgba(52, 49, 45, 0.14); }
+[data-theme="light"] .heat-cell[data-level="1"] { background: rgba(98, 144, 195, 0.35); border-color: rgba(98, 144, 195, 0.45); }
+[data-theme="light"] .heat-cell[data-level="2"] { background: rgba(98, 144, 195, 0.65); border-color: rgba(98, 144, 195, 0.75); }
+[data-theme="light"] .heat-cell[data-level="3"] { background: #6290C3; border-color: #6290C3; }
+[data-theme="light"] .heat-cell[data-level="4"] { background: #14110F; border-color: #B5F8FE; box-shadow: 0 0 6px rgba(181, 248, 254, 0.6); }
 
 .heat-cell[data-future="true"] {
   visibility: hidden;
@@ -1248,4 +1281,428 @@ button {
     animation: none !important;
     transition: none !important;
   }
+}
+
+/* ==========================================================================
+   Retro-Futuristic Engineering Workstation: Light Theme Component Styles
+   Theme Palette:
+     Primary Blue:     #6290C3
+     Soft Background:  #FFEAEC
+     Deep Ink:         #14110F
+     Accent Cyan:      #B5F8FE
+     Secondary Dark:   #34312D
+   ========================================================================== */
+
+/* ── Light Theme: Menubar ────────────────────────────────────────── */
+[data-theme="light"] .menubar {
+  background-color: rgba(255, 234, 236, 0.90);
+  border-bottom-color: rgba(98, 144, 195, 0.35);
+}
+
+[data-theme="light"] .menubar-brand {
+  color: #14110F;
+}
+
+[data-theme="light"] .status-dot {
+  background: #6290C3;
+  box-shadow: 0 0 0 2px rgba(181, 248, 254, 0.8), 0 0 8px #6290C3;
+}
+
+[data-theme="light"] .breadcrumbs {
+  color: #34312D;
+}
+
+[data-theme="light"] .breadcrumbs a {
+  color: #34312D;
+}
+
+[data-theme="light"] .breadcrumbs a:hover {
+  color: #6290C3;
+}
+
+[data-theme="light"] .breadcrumbs .current {
+  color: #14110F;
+}
+
+[data-theme="light"] .menubar-btn {
+  background: rgba(255, 255, 255, 0.82);
+  border-color: rgba(98, 144, 195, 0.35);
+  color: #34312D;
+}
+
+[data-theme="light"] .menubar-btn:hover {
+  background: #ffffff;
+  border-color: #6290C3;
+  color: #14110F;
+  box-shadow: 0 2px 8px rgba(98, 144, 195, 0.2);
+}
+
+[data-theme="light"] .menubar-btn .kbd-shortcut {
+  background: rgba(98, 144, 195, 0.12);
+  border-color: rgba(98, 144, 195, 0.28);
+  color: #34312D;
+}
+
+[data-theme="light"] .menubar-clock {
+  color: #34312D;
+  border-left-color: rgba(98, 144, 195, 0.35);
+}
+
+/* ── Light Theme: Desktop Applications Sidebar ────────────────────── */
+[data-theme="light"] .app-icon-symbol {
+  background: rgba(255, 255, 255, 0.88);
+  border-color: rgba(98, 144, 195, 0.35);
+  color: #6290C3;
+}
+
+[data-theme="light"] .app-icon:hover {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: #6290C3;
+  box-shadow: 0 4px 14px rgba(98, 144, 195, 0.2);
+}
+
+[data-theme="light"] .app-icon:hover .app-icon-symbol {
+  background: #6290C3;
+  color: #FFEAEC;
+  border-color: #6290C3;
+  box-shadow: 0 0 10px rgba(98, 144, 195, 0.4);
+}
+
+[data-theme="light"] .app-icon-label {
+  color: #34312D;
+  font-weight: 500;
+}
+
+[data-theme="light"] .app-icon:hover .app-icon-label {
+  color: #14110F;
+}
+
+[data-theme="light"] .app-icon-ext {
+  color: #6290C3;
+}
+
+/* ── Light Theme: Main PlayArMr Terminal Window ──────────────────── */
+[data-theme="light"] .hero-terminal {
+  background: rgba(255, 255, 255, 0.88);
+  border-color: rgba(98, 144, 195, 0.38);
+  box-shadow: 0 14px 40px -10px rgba(20, 17, 15, 0.12), 0 0 0 1px rgba(98, 144, 195, 0.3);
+}
+
+[data-theme="light"] .hero-terminal:hover {
+  border-color: #6290C3;
+  box-shadow: 0 16px 45px -8px rgba(98, 144, 195, 0.22), 0 0 0 1px #6290C3;
+}
+
+[data-theme="light"] .hero-terminal .window-header {
+  background: #F4DADB;
+  border-bottom-color: rgba(98, 144, 195, 0.35);
+}
+
+[data-theme="light"] .hero-terminal .window-title {
+  color: #14110F;
+  font-weight: 500;
+}
+
+[data-theme="light"] .hero-terminal .window-tag {
+  color: #6290C3;
+}
+
+[data-theme="light"] .hero-terminal .ascii-art {
+  color: #14110F;
+  text-shadow: 0 0 1px rgba(20, 17, 15, 0.4);
+}
+
+[data-theme="light"] .hero-terminal .ascii-art::before {
+  color: #6290C3;
+  text-shadow: -2px 0 #6290C3;
+}
+
+[data-theme="light"] .hero-terminal .ascii-art::after {
+  color: #34312D;
+  text-shadow: 2px 0 rgba(98, 144, 195, 0.8);
+}
+
+[data-theme="light"] .hero-terminal .prompt-line-top {
+  color: #34312D;
+}
+
+[data-theme="light"] .hero-terminal .seg-user {
+  color: #6290C3;
+  font-weight: 600;
+}
+
+[data-theme="light"] .hero-terminal .seg-at {
+  color: #34312D;
+}
+
+[data-theme="light"] .hero-terminal .seg-host {
+  color: #14110F;
+  font-weight: 600;
+}
+
+[data-theme="light"] .hero-terminal .seg-in {
+  color: #6c655d;
+}
+
+[data-theme="light"] .hero-terminal .seg-dir {
+  color: #6290C3;
+}
+
+[data-theme="light"] .hero-terminal .seg-branch {
+  color: #34312D;
+}
+
+[data-theme="light"] .hero-terminal .seg-ok {
+  color: #6290C3;
+}
+
+[data-theme="light"] .hero-terminal .prompt-arrow {
+  color: #6290C3;
+}
+
+[data-theme="light"] .hero-terminal .prompt-cmd {
+  color: #14110F;
+  font-weight: 600;
+}
+
+[data-theme="light"] .hero-terminal .whoami-key {
+  color: #6290C3;
+  font-weight: 600;
+}
+
+[data-theme="light"] .hero-terminal .whoami-val {
+  color: #14110F;
+}
+
+[data-theme="light"] .hero-terminal .terminal-divider {
+  border-top-color: rgba(98, 144, 195, 0.28);
+}
+
+[data-theme="light"] .hero-terminal .interactive-cli {
+  background: #F4DADB;
+  border-color: rgba(98, 144, 195, 0.45);
+}
+
+[data-theme="light"] .hero-terminal .interactive-cli:focus-within {
+  border-color: #6290C3;
+  box-shadow: 0 0 12px rgba(98, 144, 195, 0.25);
+}
+
+[data-theme="light"] .hero-terminal .interactive-cli input {
+  color: #14110F;
+}
+
+[data-theme="light"] .hero-terminal .interactive-cli input::placeholder {
+  color: #6c655d;
+}
+
+[data-theme="light"] .hero-terminal .cursor-blink {
+  background: #6290C3;
+  box-shadow: 0 0 8px rgba(98, 144, 195, 0.5);
+}
+
+[data-theme="light"] .hero-terminal .cli-output {
+  color: #14110F;
+}
+
+[data-theme="light"] .hero-terminal .cli-output a {
+  color: #6290C3;
+  text-decoration: underline;
+}
+
+/* ── Light Theme: Technical Cards & Widgets ───────────────────────── */
+[data-theme="light"] .window-card {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(98, 144, 195, 0.35);
+  box-shadow: 0 14px 38px -10px rgba(20, 17, 15, 0.1), 0 0 0 1px rgba(98, 144, 195, 0.25);
+}
+
+[data-theme="light"] .window-card:hover {
+  border-color: #6290C3;
+  box-shadow: 0 16px 42px -8px rgba(98, 144, 195, 0.2), 0 0 0 1px #6290C3;
+}
+
+[data-theme="light"] .window-card .window-header,
+[data-theme="light"] .widget-card-header {
+  background: #F4DADB;
+  border-bottom-color: rgba(98, 144, 195, 0.3);
+}
+
+[data-theme="light"] .widget-title {
+  color: #14110F;
+}
+
+[data-theme="light"] .widget-subtitle {
+  color: #34312D;
+  font-weight: 500;
+}
+
+[data-theme="light"] .widget-item {
+  border-bottom-color: rgba(98, 144, 195, 0.22);
+}
+
+[data-theme="light"] .widget-item-link:hover {
+  background: rgba(255, 255, 255, 0.98);
+}
+
+[data-theme="light"] .widget-item-title {
+  color: #14110F;
+}
+
+[data-theme="light"] .widget-item-link:hover .widget-item-title {
+  color: #6290C3;
+}
+
+[data-theme="light"] .widget-item-desc {
+  color: #34312D;
+}
+
+[data-theme="light"] .widget-item-arrow {
+  color: #6290C3;
+}
+
+[data-theme="light"] .tag-pill {
+  background: rgba(98, 144, 195, 0.12);
+  border-color: rgba(98, 144, 195, 0.35);
+  color: #34312D;
+}
+
+[data-theme="light"] .widget-footer-link {
+  background: #F4DADB;
+  border-top-color: rgba(98, 144, 195, 0.3);
+  color: #34312D;
+}
+
+[data-theme="light"] .widget-footer-link:hover {
+  background: #ffffff;
+  color: #6290C3;
+}
+
+/* ── Light Theme: GitHub Activity Heatmap ─────────────────────────── */
+[data-theme="light"] .heatmap-summary {
+  color: #34312D;
+}
+
+[data-theme="light"] .heatmap-summary strong {
+  color: #14110F;
+}
+
+[data-theme="light"] .heatmap-months,
+[data-theme="light"] .heatmap-days {
+  color: #34312D;
+}
+
+[data-theme="light"] .heatmap-legend {
+  color: #34312D;
+}
+
+/* ── Light Theme: Command Palette ─────────────────────────────────── */
+[data-theme="light"] .palette-overlay {
+  background: rgba(20, 17, 15, 0.55);
+}
+
+[data-theme="light"] .palette-modal {
+  background: #FFEAEC;
+  border-color: #6290C3;
+  box-shadow: 0 25px 60px -12px rgba(20, 17, 15, 0.25), 0 0 20px rgba(98, 144, 195, 0.25);
+}
+
+[data-theme="light"] .palette-input-wrap {
+  background: #F4DADB;
+  border-bottom-color: rgba(98, 144, 195, 0.35);
+}
+
+[data-theme="light"] .palette-input {
+  color: #14110F;
+}
+
+[data-theme="light"] .palette-input::placeholder {
+  color: #34312D;
+}
+
+[data-theme="light"] .palette-category {
+  color: #34312D;
+  font-weight: 600;
+}
+
+[data-theme="light"] .palette-item {
+  color: #14110F;
+}
+
+[data-theme="light"] .palette-item:hover,
+[data-theme="light"] .palette-item.selected {
+  background: rgba(98, 144, 195, 0.18);
+  color: #14110F;
+}
+
+[data-theme="light"] .palette-item-badge {
+  color: #34312D;
+}
+
+/* ── Light Theme: About Modal ─────────────────────────────────────── */
+[data-theme="light"] .about-modal {
+  background: #FFEAEC;
+  border-color: rgba(98, 144, 195, 0.45);
+}
+
+[data-theme="light"] .about-modal .window-header {
+  background: #34312D;
+  border-bottom-color: rgba(98, 144, 195, 0.35);
+}
+
+[data-theme="light"] .about-modal .window-title {
+  color: #B5F8FE;
+}
+
+[data-theme="light"] .about-content h2 {
+  color: #14110F;
+}
+
+[data-theme="light"] .about-content p {
+  color: #34312D;
+}
+
+[data-theme="light"] .about-content a {
+  color: #6290C3;
+}
+
+[data-theme="light"] .about-content a:hover {
+  color: #14110F;
+}
+
+/* ── Light Theme: Article / Blog Typography ───────────────────────── */
+[data-theme="light"] .article-title {
+  color: #14110F;
+}
+
+[data-theme="light"] .article-meta {
+  color: #34312D;
+}
+
+[data-theme="light"] .article-body {
+  color: #14110F;
+}
+
+[data-theme="light"] .article-body h2 {
+  color: #6290C3;
+}
+
+[data-theme="light"] .article-body h2::before {
+  color: #34312D;
+}
+
+[data-theme="light"] .formula-box {
+  background: #14110F;
+  color: #B5F8FE;
+  border-left: 3px solid #6290C3;
+  box-shadow: 0 4px 16px rgba(20, 17, 15, 0.15);
+}
+
+[data-theme="light"] .article-highlight {
+  color: #14110F;
+  border-bottom: 1px dashed #6290C3;
+}
+
+[data-theme="light"] .article-accent {
+  color: #6290C3;
 }
