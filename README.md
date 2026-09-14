@@ -36,6 +36,7 @@ Live deployment: **[mrudulkulkarni.vercel.app](https://mrudulkulkarni.vercel.app
 portfolio/
 ├── index.html                           # Main desktop OS dashboard & terminal
 ├── page2.html                           # Blog archive index (~/blog)
+├── recursive-abstraction.html           # Philosophical & systems essay reader
 ├── a-solution-to-data-degradation.html  # Technical & speculative essay reader
 ├── shared.css                           # Design system, themes & desktop widgets
 ├── shared.js                            # Theme sync, CRT shaders, command palette, live clock

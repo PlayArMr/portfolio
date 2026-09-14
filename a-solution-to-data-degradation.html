@@ -228,6 +228,30 @@
     </div>
   </div>
 
+  <!-- ── About Modal (ABOUT.md) ─────────────────────────────────────────── -->
+  <div id="about-modal-overlay" class="about-modal-overlay" role="dialog" aria-modal="true" aria-label="About Me">
+    <div class="about-modal">
+      <div class="window-header">
+        <div class="window-dots">
+          <span class="window-dot red" onclick="window.PlayArMr.closeAboutModal()" style="cursor:pointer;" title="Close"></span>
+          <span class="window-dot yellow"></span>
+          <span class="window-dot green"></span>
+        </div>
+        <div class="window-title">cat ~/ABOUT.md</div>
+        <button onclick="window.PlayArMr.closeAboutModal()" style="color:var(--fg-dim); font-size:1rem; cursor:pointer;" title="Close">✕</button>
+      </div>
+      <div class="about-content">
+        <h2>About Mrudul Kulkarni</h2>
+        <p>I am a Computer Engineering student at <strong>MES Wadia College of Engineering, Pune</strong>, exploring low-level systems, software tooling, and computing ideas.</p>
+        <p>Writing here explores computer science thought experiments, linguistics, and philosophy.</p>
+        <hr class="terminal-divider">
+        <p style="font-size:0.8125rem; color:var(--fg-dim);">
+          Reach out: <a href="#" data-email-target class="article-accent">loading email...</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
   <script src="./shared.js"></script>
   <script>
     function copyArticleUrl() {

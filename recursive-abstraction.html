@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recursive Abstraction — mrudul@kulkarni</title>
+  <meta name="description" content="From Grace Hopper's first compiler to automated memory management and modern LLMs: how computer science became an ongoing arms race of moving complexity further away from human cognition.">
+  <meta name="author" content="Mrudul Kulkarni">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Recursive Abstraction — Mrudul Kulkarni">
+  <meta property="og:description" content="From Grace Hopper to AI: how computer science became an ongoing arms race of moving complexity away from the human.">
+  <meta property="article:published_time" content="2026-09-14">
+  <meta property="article:author" content="Mrudul Kulkarni">
+
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:creator" content="@PlayArMr2">
+  <meta name="twitter:title" content="Recursive Abstraction — Mrudul Kulkarni">
+  <meta name="twitter:description" content="From Grace Hopper to AI: how computer science became an ongoing arms race of moving complexity away from the human.">
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300f0ff'><text y='18' font-size='18' font-family='monospace'>❯_</text></svg>">
+
+  <!-- Pre-apply theme -->
+  <script>
+    (function() {
+      try {
+        const saved = localStorage.getItem('playarmr-theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', saved);
+      } catch(e) {}
+    })();
+  </script>
+
+  <link rel="stylesheet" href="./shared.css">
+</head>
+<body class="crt-active">
+
+  <!-- ── Top Menubar (Max Leiter Style) ─────────────────────────────────── -->
+  <header class="menubar" role="banner">
+    <div class="menubar-left">
+      <div class="menubar-brand">
+        <span class="status-dot" aria-label="System status online"></span>
+        <a href="./index.html" style="color:var(--fg); font-weight:600;">~ / PlayArMr</a>
+      </div>
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <span class="sep">/</span>
+        <a href="./page2.html">blog</a>
+        <span class="sep">/</span>
+        <span class="current" title="recursive-abstraction.md">recursive-abstraction</span>
+      </nav>
+    </div>
+
+    <div class="menubar-right">
+      <button class="menubar-btn" id="crt-toggle-btn" onclick="window.PlayArMr.toggleCRT()" title="Toggle CRT scanlines">
+        <span style="opacity:0.7">CRT:</span> <span style="color:var(--green)">ON</span>
+      </button>
+
+      <button class="menubar-btn" onclick="window.PlayArMr.openPalette()" title="Search (⌘K / Ctrl+K)">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <circle cx="6.5" cy="6.5" r="5"></circle>
+          <line x1="10" y1="10" x2="15" y2="15"></line>
+        </svg>
+        <span>Search</span>
+        <span class="kbd-shortcut">⌘K</span>
+      </button>
+
+      <button class="menubar-btn" onclick="window.PlayArMr.toggleTheme()" title="Toggle Theme" aria-label="Toggle Theme">
+        <svg id="theme-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+        </svg>
+      </button>
+
+      <time class="menubar-clock" id="menubar-clock">--:--:-- IST</time>
+    </div>
+  </header>
+
+  <!-- ── Article Reader Container ───────────────────────────────────────── -->
+  <div class="desktop-wrapper" style="max-width: 820px;">
+    
+    <div class="window-card">
+      <div class="window-header">
+        <div class="window-dots">
+          <a href="./page2.html" class="window-dot red" title="cd ../ (Back to Blog)"></a>
+          <span class="window-dot yellow"></span>
+          <span class="window-dot green"></span>
+        </div>
+        <div class="window-title">zsh &nbsp;·&nbsp; SpiritOfFire@MrudulK &nbsp;·&nbsp; ~/blog/posts</div>
+        <button onclick="copyArticleUrl()" class="menubar-btn" style="padding: 0.15rem 0.5rem; font-size:0.6875rem;">
+          <span>Share</span>
+        </button>
+      </div>
+
+      <div class="window-body" style="padding: clamp(1.25rem, 3vw, 2.5rem);">
+        
+        <!-- Back Navigation Link -->
+        <a href="./page2.html" style="display:inline-flex; align-items:center; gap:0.4rem; color:var(--fg-dim); font-size:0.8125rem; margin-bottom:1.5rem; transition:color 0.15s;">
+          <span>&larr;</span> <span>cd ../</span> <span style="opacity:0.6;">(back to blog index)</span>
+        </a>
+
+        <!-- Terminal cat header -->
+        <div class="prompt-group" style="margin-bottom:1.25rem;">
+          <div class="prompt-line-top">
+            <span class="prompt-segment">
+              <span class="seg-user">mrudul</span><span class="seg-at">@</span><span class="seg-host">kulkarni</span>
+            </span>
+            <span class="seg-in">in</span>
+            <span class="prompt-segment">
+              <span class="seg-dir">~/blog/posts</span>
+            </span>
+            <span class="seg-ok">✔</span>
+          </div>
+          <div class="prompt-cmd-line">
+            <span class="prompt-arrow">❯</span>
+            <span class="prompt-cmd">cat "Recursive Abstraction.md"</span>
+          </div>
+        </div>
+
+        <!-- Article Metadata Block -->
+        <header class="article-header">
+          <h1 class="article-title">Recursive Abstraction</h1>
+          <div class="article-meta">
+            <span>By <strong style="color:var(--fg);">Mrudul Kulkarni</strong></span>
+            <span>&bull;</span>
+            <time datetime="2026-09-14">September 14, 2026</time>
+            <span>&bull;</span>
+            <span class="tag-pill" style="color:var(--green)">4 min read</span>
+            <span>&bull;</span>
+            <span class="tag-pill" style="color:var(--cyan)">systems &middot; philosophy</span>
+          </div>
+        </header>
+
+        <!-- Article Markdown Content -->
+        <article class="article-body">
+          <p>The earliest computers to ever be made were one of the most difficult pieces of electronics in human history. Vacuum tubes, excessive power consumption, and expensive runtime made these machines among the most demanding endeavours humanity ever engaged in.</p>
+
+          <p>Then came programming them. Punch cards, taped together, were used for storing code &mdash; or more accurately, raw instructions in binary.</p>
+
+          <p>Rear Admiral <span class="article-accent">Grace Hopper</span>, an American mathematician and US Navy officer, thought that repeatedly writing instructions for machines was tedious, and decided to improve upon reducing the tediousness of writing instructions. Hopper and her team developed the <span class="article-highlight">A-0</span>, the first compiler for code, which took higher-level code readable (in a sense) to humans and converted it into machine-readable instructions. This was one of the first abstractions in computer science, and it was a revolution, allowing programmers to write considerably more complicated programs with expanded capability.</p>
+
+          <p>Next, Hopper conceptualised programming using words instead of mathematical symbols, developing <span class="article-accent">FLOW-MATIC</span> &mdash; an ancestor of COBOL, which still powers banking backbones worldwide today. This was another abstraction. It is easier to conceptualise and visualise programming when words are used instead of mathematical symbols. Then, instead of raw machine code, we could write programs in Assembly. And then the bigger leap was compiling programs from high-level programming languages to assembly, allowing programmers to write pure program logic without wrestling with individual CPU instruction cycles.</p>
+
+          <p>High-level languages like <span class="article-accent">C</span> or <span class="article-accent">C++</span> compile into machine code directly, without users needing to manually orchestrate CPU instructions. Compilers for high-level languages are among the most important inventions of the modern era, allowing the software humanity relies on to run effectively on any architecture.</p>
+
+          <p>With massive gains in computational power, we could simplify high-level languages and their syntax even further, automating memory management along the way. Languages like <span class="article-accent">Java</span> and <span class="article-accent">Python</span> do not require developers to manually allocate and free memory, abstracting away yet another layer of complexity programmers once lived with.</p>
+
+          <h2>The Arms Race Away from the Machine</h2>
+
+          <p>Computer science, since its inception, has fundamentally been about abstraction &mdash; the systematic removal of unneeded complexity. The operating systems we rely on today were developed so users could run a variety of programs reliably on a machine without handling CPU registers or paging manually. Libraries were built so programmers never had to rewrite existing solutions, drastically accelerating development cycles. Today, it is almost expected to search for solutions using AI, or platforms like Stack Overflow before it, and integrate working patterns directly into projects.</p>
+
+          <p>Therefore, computer science has always been an arms race of who can engineer the better layer of abstraction so programmers worry less about the underlying machine:</p>
+
+          <div class="formula-box">
+            Compilers &rarr; eliminate CPU instruction management<br>
+            Garbage Collection &rarr; eliminates manual memory management<br>
+            Operating Systems &rarr; eliminate hardware-level orchestration
+          </div>
+
+          <p>With every layer of abstraction, we remove another factor the programmer had to think about. Which brings us to the inevitable question: <strong class="article-highlight">What if the programmer has no need to think about the program itself?</strong></p>
+
+          <h2>From Instructions to Intent</h2>
+
+          <p>Most historical abstractions simplified or reduced the effort of writing instructions &mdash; but the human programmer still had to craft those instructions. This paradigm shifted with the advent of modern AI and Large Language Models (LLMs), which predict text conditioned on vast corpuses of data. With sufficient scale, these models demonstrate capabilities that parallel human cognition. Whether an LLM &ldquo;thinks&rdquo; in the human sense remains a matter of deep philosophical debate; practically speaking, with adequate training, the model is smart enough.</p>
+
+          <p>Consequently, AI models can indeed write code and automate tasks across wide ranges of intellectual complexity. Programming using AI has rapidly expanded, with entire software systems being implemented with minimal direct human coding. AI is, in essence, an abstraction for producing the instructions themselves.</p>
+
+          <p>It is therefore not radical to view AI as simply another layer in the long genealogy of abstraction in computer science &mdash; abstracting away the very need to write code syntax for the machine. With AI, a human specifies an intended function or outcome, and the model constructs the implementation.</p>
+
+          <h2>Moving the Complexity</h2>
+
+          <p>The machine has progressively receded from the programmer's immediate awareness: first its individual binary gates, then its registers and memory, then its hardware architecture, and now, increasingly, the syntax of the software itself. AI pushes this progression one step further by allowing humans to specify an <span class="article-highlight">outcome</span> without specifying the explicit program that produces it.</p>
+
+          <p>But abstraction does not make underlying complexity disappear. <strong class="article-highlight">It merely moves it somewhere else.</strong></p>
+
+          <div class="formula-box">
+            Machine &rarr; Software &rarr; Language &rarr; Interface &rarr; Intent
+          </div>
+
+          <p>A developer working in a high-level language does not need to understand machine opcodes, but the compiler still must. A Python developer does not manually free pointers, but the runtime still does. An AI user may not write the code, but the code, compiler, operating system, and silicon still operate beneath the prompt.</p>
+
+          <p>Perhaps this is the defining characteristic of computer science: <em>we do not eliminate complexity. We keep moving it further away from the human.</em></p>
+
+          <p>And if that is true, AI may not be the end of the abstraction ladder. It may simply be the newest rung. The machine was abstracted into software. Software was abstracted into languages and interfaces. And now, software itself is being abstracted into pure intent.</p>
+
+          <p><strong class="article-highlight">The interesting question is no longer: how much can we abstract? It is what happens when we eventually forget what lies beneath the abstractions.</strong></p>
+        </article>
+
+        <hr class="terminal-divider" style="margin: 2.5rem 0 1.5rem;">
+
+        <!-- Article Footer Actions -->
+        <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:1rem;">
+          <a href="./page2.html" class="menubar-btn" style="padding:0.5rem 1rem;">
+            &larr; Back to all posts
+          </a>
+          <button onclick="copyArticleUrl()" class="menubar-btn" style="padding:0.5rem 1rem;">
+            Copy article link ↗
+          </button>
+        </div>
+
+        <!-- Terminal Prompt at End -->
+        <div class="prompt-group" style="margin-top:2rem;">
+          <div class="prompt-line-top">
+            <span class="prompt-segment">
+              <span class="seg-user">mrudul</span><span class="seg-at">@</span><span class="seg-host">kulkarni</span>
+            </span>
+            <span class="seg-in">in</span>
+            <span class="prompt-segment">
+              <span class="seg-dir">~/blog/posts</span>
+            </span>
+          </div>
+          <div class="prompt-cmd-line">
+            <span class="prompt-arrow">❯</span>
+            <span class="cursor-blink"></span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Command Palette Modal (⌘K / Ctrl+K) ────────────────────────────── -->
+  <div id="palette-overlay" class="palette-overlay" role="dialog" aria-modal="true" aria-label="Command Palette">
+    <div class="palette-modal">
+      <div class="palette-input-wrap">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" style="color:var(--cyan)">
+          <circle cx="6.5" cy="6.5" r="5"></circle>
+          <line x1="10" y1="10" x2="15" y2="15"></line>
+        </svg>
+        <input type="text" id="palette-input" class="palette-input" placeholder="Search posts, projects, or commands..." autocomplete="off" spellcheck="false">
+        <span class="kbd-shortcut" style="color:var(--fg-dim); font-size:0.75rem;">ESC to exit</span>
+      </div>
+      <div id="palette-results" class="palette-results"></div>
+    </div>
+  </div>
+
+  <!-- ── About Modal (ABOUT.md) ─────────────────────────────────────────── -->
+  <div id="about-modal-overlay" class="about-modal-overlay" role="dialog" aria-modal="true" aria-label="About Me">
+    <div class="about-modal">
+      <div class="window-header">
+        <div class="window-dots">
+          <span class="window-dot red" onclick="window.PlayArMr.closeAboutModal()" style="cursor:pointer;" title="Close"></span>
+          <span class="window-dot yellow"></span>
+          <span class="window-dot green"></span>
+        </div>
+        <div class="window-title">cat ~/ABOUT.md</div>
+        <button onclick="window.PlayArMr.closeAboutModal()" style="color:var(--fg-dim); font-size:1rem; cursor:pointer;" title="Close">✕</button>
+      </div>
+      <div class="about-content">
+        <h2>About Mrudul Kulkarni</h2>
+        <p>I am a Computer Engineering student at <strong>MES Wadia College of Engineering, Pune</strong>, exploring low-level systems, software tooling, and computing ideas.</p>
+        <p>Writing here explores computer science thought experiments, linguistics, and philosophy.</p>
+        <hr class="terminal-divider">
+        <p style="font-size:0.8125rem; color:var(--fg-dim);">
+          Reach out: <a href="#" data-email-target class="article-accent">loading email...</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script src="./shared.js"></script>
+  <script>
+    function copyArticleUrl() {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        window.PlayArMr.showToast('Article URL copied to clipboard!');
+      }).catch(() => {
+        window.PlayArMr.showToast('Article: ' + window.location.href);
+      });
+    }
+  </script>
+</body>
+</html>

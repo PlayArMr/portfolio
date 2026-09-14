@@ -302,6 +302,7 @@
   const PALETTE_DATA = [
     { category: 'Navigation', title: '~ (Desktop Home)', url: './index.html', icon: '⌂', badge: 'Page' },
     { category: 'Navigation', title: '~/blog (All Writing)', url: './page2.html', icon: '◈', badge: 'Page' },
+    { category: 'Navigation', title: 'Recursive Abstraction', url: './recursive-abstraction.html', icon: '✦', badge: 'Essay' },
     { category: 'Navigation', title: 'A Solution to Data Degradation', url: './a-solution-to-data-degradation.html', icon: '✦', badge: 'Essay' },
     { category: 'Navigation', title: 'ABOUT.md (Whoami)', action: openAboutModal, icon: 'ℹ', badge: 'Modal' },
 
