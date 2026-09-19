@@ -250,13 +250,13 @@
         right: 24px;
         z-index: 10005;
         background: var(--bg-window);
-        border: 1px solid var(--cyan);
+        border: 1px solid var(--border-hover);
         color: var(--fg);
         font-family: var(--font-mono);
         font-size: 0.8125rem;
         padding: 0.65rem 1.1rem;
         border-radius: 8px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 10px rgba(0,240,255,0.2);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 10px var(--selection);
         opacity: 0;
         transform: translateY(10px);
         transition: all 0.25s ease;
@@ -497,6 +497,289 @@
     }
   }
 
+  // --- 8. Ambient Constellation Grid Background ---
+  function initConstellationGrid() {
+    let canvas = document.getElementById('constellation-grid-canvas');
+    if (!canvas) {
+      canvas = document.createElement('canvas');
+      canvas.id = 'constellation-grid-canvas';
+      canvas.className = 'constellation-grid-canvas';
+      canvas.setAttribute('aria-hidden', 'true');
+      document.body.prepend(canvas);
+    }
+
+    const ctx = canvas.getContext('2d', { alpha: false });
+    if (!ctx) return;
+
+    let animationFrameId;
+    let width = 0;
+    let height = 0;
+
+    const mouse = {
+      x: -1000,
+      y: -1000,
+      prevX: -1000,
+      prevY: -1000,
+      vx: 0,
+      vy: 0,
+      radius: 175,
+      radiusSq: 175 * 175,
+    };
+
+    let nodes = [];
+    let currentWidth = window.innerWidth;
+    let currentHeight = window.innerHeight;
+
+    function initNodes() {
+      nodes = [];
+      const isMobile = width < 768;
+      const spacing = isMobile ? 56 : 70; // Well-spaced constellation density
+      const cols = Math.ceil(width / spacing) + 1;
+      const rows = Math.ceil(height / spacing) + 1;
+
+      for (let i = 0; i < cols; i++) {
+        for (let j = 0; j < rows; j++) {
+          const x = i * spacing;
+          const y = j * spacing;
+          nodes.push({
+            x: x,
+            y: y,
+            vx: 0,
+            vy: 0,
+            baseX: x,
+            baseY: y,
+            radius: Math.random() * 0.8 + 1.0,
+            label: (i * 7).toString(16).toUpperCase() + ':' + (j * 11).toString(16).toUpperCase(),
+            pulse: Math.random() * Math.PI * 2,
+          });
+        }
+      }
+    }
+
+    function handleResize() {
+      const newWidth = window.innerWidth;
+      const newHeight = window.innerHeight;
+
+      // Avoid re-initialization on mobile address bar collapse/expand
+      const isMinorMobileHeightChange =
+        newWidth === currentWidth && Math.abs(newHeight - currentHeight) < 140;
+
+      if (isMinorMobileHeightChange && nodes.length > 0) {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        height = newHeight;
+        canvas.height = height * dpr;
+        canvas.style.height = height + 'px';
+        ctx.scale(dpr, dpr);
+        return;
+      }
+
+      currentWidth = newWidth;
+      currentHeight = newHeight;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      width = newWidth;
+      height = newHeight;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      canvas.style.width = width + 'px';
+      canvas.style.height = height + 'px';
+      ctx.scale(dpr, dpr);
+      mouse.radius = width < 768 ? 125 : 175;
+      mouse.radiusSq = mouse.radius * mouse.radius;
+      initNodes();
+    }
+
+    function handleMouseMove(e) {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    }
+
+    function handleMouseLeave() {
+      mouse.x = -1000;
+      mouse.y = -1000;
+    }
+
+    function handleTouchMove(e) {
+      if (e.touches && e.touches[0]) {
+        mouse.x = e.touches[0].clientX;
+        mouse.y = e.touches[0].clientY;
+      }
+    }
+
+    function handleTouchStart(e) {
+      if (e.touches && e.touches[0]) {
+        mouse.x = e.touches[0].clientX;
+        mouse.y = e.touches[0].clientY;
+        mouse.prevX = mouse.x;
+        mouse.prevY = mouse.y;
+      }
+    }
+
+    function handleTouchEnd() {
+      mouse.x = -1000;
+      mouse.y = -1000;
+    }
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseleave', handleMouseLeave);
+    window.addEventListener('touchstart', handleTouchStart, { passive: true });
+    window.addEventListener('touchmove', handleTouchMove, { passive: true });
+    window.addEventListener('touchend', handleTouchEnd, { passive: true });
+    window.addEventListener('touchcancel', handleTouchEnd, { passive: true });
+
+    let lastTime = performance.now();
+
+    function render(now) {
+      const dt = Math.min((now - lastTime) / 1000, 0.05);
+      lastTime = now;
+
+      mouse.vx = (mouse.x - mouse.prevX) / (dt * 1000 || 1);
+      mouse.vy = (mouse.y - mouse.prevY) / (dt * 1000 || 1);
+      mouse.prevX = mouse.x;
+      mouse.prevY = mouse.y;
+
+      const speed = Math.sqrt(mouse.vx * mouse.vx + mouse.vy * mouse.vy);
+
+      const isDarkMode = document.documentElement.getAttribute('data-theme') !== 'light';
+      const bgColor = isDarkMode ? '#09090B' : '#FAFBFC';
+      const cyanLine = '6, 182, 212';
+      const purpleAccent = '168, 85, 247';
+      const accentColor = isDarkMode ? cyanLine : '59, 130, 246';
+      const nodeIdleColor = isDarkMode ? cyanLine : '148, 163, 184';
+
+      ctx.fillStyle = bgColor;
+      ctx.fillRect(0, 0, width, height);
+
+      // Node Physics Engine (Hooke's Law Spring-Mass-Damping system)
+      const SPRING_K = 14;
+      const DAMPING = 0.86;
+
+      for (let i = 0; i < nodes.length; i++) {
+        const n = nodes[i];
+        n.pulse += dt * 1.1;
+
+        const dx = mouse.x - n.x;
+        const dy = mouse.y - n.y;
+        const distSq = dx * dx + dy * dy;
+
+        if (distSq < mouse.radiusSq && distSq > 0) {
+          const dist = Math.sqrt(distSq);
+          const power = 1 - dist / mouse.radius;
+          const cappedSpeed = Math.min(speed, 45);
+          const force = power * (440 + cappedSpeed * 24);
+          const angle = Math.atan2(dy, dx);
+
+          n.vx -= Math.cos(angle) * force * dt;
+          n.vy -= Math.sin(angle) * force * dt;
+        }
+
+        const homeDx = n.baseX - n.x;
+        const homeDy = n.baseY - n.y;
+
+        n.vx += homeDx * SPRING_K * dt;
+        n.vy += homeDy * SPRING_K * dt;
+
+        n.vx *= DAMPING;
+        n.vy *= DAMPING;
+
+        n.x += n.vx * dt * 60;
+        n.y += n.vy * dt * 60;
+      }
+
+      // Draw Connections (Spatial Culling for 60/120fps performance)
+      const isMobile = width < 768;
+      const MAX_CONN_DIST = isMobile ? 82 : 98;
+      const MAX_CONN_DIST_SQ = MAX_CONN_DIST * MAX_CONN_DIST;
+      ctx.lineWidth = 0.85;
+
+      for (let i = 0; i < nodes.length; i++) {
+        const n = nodes[i];
+
+        for (let j = i + 1; j < nodes.length; j++) {
+          const n2 = nodes[j];
+          if (n2.baseX - n.baseX > MAX_CONN_DIST + 40) break;
+
+          const ndx = n.x - n2.x;
+          const ndy = n.y - n2.y;
+          const distSq = ndx * ndx + ndy * ndy;
+
+          if (distSq < MAX_CONN_DIST_SQ) {
+            const nDist = Math.sqrt(distSq);
+            // Clearly visible yet subtle ambient lines
+            const baseAlpha = (1 - nDist / MAX_CONN_DIST) * (isDarkMode ? 0.18 : 0.28);
+            const isLineNear =
+              (mouse.x - n.x) ** 2 + (mouse.y - n.y) ** 2 < mouse.radiusSq ||
+              (mouse.x - n2.x) ** 2 + (mouse.y - n2.y) ** 2 < mouse.radiusSq;
+            const alpha = isLineNear
+              ? Math.min(baseAlpha * 1.45, isDarkMode ? 0.32 : 0.38)
+              : baseAlpha;
+
+            // #06B6D4 primary lines with #A855F7 secondary interactive emphasis
+            const strokeRgb = isDarkMode
+              ? (isLineNear ? purpleAccent : cyanLine)
+              : accentColor;
+
+            ctx.strokeStyle = 'rgba(' + strokeRgb + ', ' + alpha + ')';
+            ctx.beginPath();
+            ctx.moveTo(n.x, n.y);
+            ctx.lineTo(n2.x, n2.y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      // Render Node Points & Interactive Highlights
+      for (let i = 0; i < nodes.length; i++) {
+        const n = nodes[i];
+        const dx = mouse.x - n.x;
+        const dy = mouse.y - n.y;
+        const distSq = dx * dx + dy * dy;
+        const isNear = distSq < mouse.radiusSq;
+
+        const idleAlpha = isDarkMode
+          ? (0.16 + Math.sin(n.pulse) * 0.04)
+          : (0.18 + Math.sin(n.pulse) * 0.05);
+        const alpha = isNear ? (isDarkMode ? 0.50 : 0.50) : idleAlpha;
+
+        const nodeRgb = isDarkMode
+          ? (isNear ? purpleAccent : cyanLine)
+          : (isNear ? accentColor : nodeIdleColor);
+
+        ctx.fillStyle = 'rgba(' + nodeRgb + ', ' + alpha + ')';
+
+        const currentRadius = isNear
+          ? n.radius * 1.35
+          : n.radius + Math.sin(n.pulse) * 0.18;
+
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, Math.max(0.6, currentRadius), 0, Math.PI * 2);
+        ctx.fill();
+
+        // Spatial radar ping & hex readout near cursor
+        if (distSq < 60 * 60) {
+          const pulseRing = ((n.pulse * 14) % 26) + 3;
+          const ringAlpha = (1 - pulseRing / 29) * (isDarkMode ? 0.20 : 0.18);
+          const pingColor = isDarkMode ? purpleAccent : accentColor;
+
+          ctx.strokeStyle = 'rgba(' + pingColor + ', ' + ringAlpha + ')';
+          ctx.lineWidth = 0.6;
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, pulseRing, 0, Math.PI * 2);
+          ctx.stroke();
+
+          ctx.font = '8px ui-monospace, SFMono-Regular, Consolas, monospace';
+          ctx.fillStyle = isDarkMode ? 'rgba(' + cyanLine + ', 0.50)' : 'rgba(' + accentColor + ', 0.50)';
+          ctx.fillText(n.label, n.x + 9, n.y - 9);
+        }
+      }
+
+      animationFrameId = requestAnimationFrame(render);
+    }
+
+    animationFrameId = requestAnimationFrame(render);
+  }
+
   // --- Export helpers to window for inline triggers ---
   window.PlayArMr = {
     toggleTheme,
@@ -510,12 +793,19 @@
   };
 
   // --- DOM Ready Bootstrapping ---
-  document.addEventListener('DOMContentLoaded', () => {
+  function startBootstrap() {
     initTheme();
     initCRT();
     initClock();
     initEmailTargets();
     initKeyboard();
-  });
+    initConstellationGrid();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', startBootstrap);
+  } else {
+    startBootstrap();
+  }
 
 })();

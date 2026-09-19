@@ -38,6 +38,9 @@
 </head>
 <body class="crt-active">
 
+  <!-- ── Constellation Grid Ambient Background ───────────────────────────── -->
+  <canvas id="constellation-grid-canvas" class="constellation-grid-canvas" aria-hidden="true"></canvas>
+
   <!-- ── Top Menubar (Max Leiter Style) ─────────────────────────────────── -->
   <header class="menubar" role="banner">
     <div class="menubar-left">
@@ -533,10 +536,10 @@
                 <div><span class="ff-key">GPU:</span> <span class="ff-val">NVIDIA GeForce RTX 3070 Ti</span></div>
                 <div><span class="ff-key">Memory:</span> <span class="ff-val">14.2 GiB / 32.0 GiB (44%)</span></div>
                 <div style="margin-top:6px; line-height:1;">
-                  <span style="color:#1e2430">███</span><span style="color:#ff3366">███</span><span style="color:#39ff88">███</span><span style="color:#ffe66d">███</span><span style="color:#00d9ff">███</span><span style="color:#ff2bd6">███</span><span style="color:#00f0ff">███</span><span style="color:#e2f0fc">███</span>
+                  <span style="color:var(--muted)">███</span><span style="color:var(--secondary)">███</span><span style="color:var(--border)">███</span><span style="color:var(--destructive)">███</span><span style="color:var(--primary)">███</span><span style="color:var(--fg-dim)">███</span><span style="color:var(--fg)">███</span><span style="color:var(--primary)">███</span>
                 </div>
                 <div style="line-height:1;">
-                  <span style="color:#505c70">███</span><span style="color:#ff6688">███</span><span style="color:#66ffaa">███</span><span style="color:#fff099">███</span><span style="color:#66e6ff">███</span><span style="color:#ff66e0">███</span><span style="color:#80f7ff">███</span><span style="color:#ffffff">███</span>
+                  <span style="color:var(--bg-alt)">███</span><span style="color:var(--secondary)">███</span><span style="color:var(--border-subtle)">███</span><span style="color:var(--destructive)">███</span><span style="color:var(--accent)">███</span><span style="color:var(--fg-faint)">███</span><span style="color:var(--fg)">███</span><span style="color:var(--primary)">███</span>
                 </div>
               </div>
             </div>`;
@@ -612,12 +615,12 @@
             break;
 
           default:
-            res = `<div style="color:var(--fg-dim)">zsh: command not found: ${parts[0]}. Type <span style="color:var(--cyan)">'help'</span> for available commands.</div>`;
+            res = `<div style="color:var(--destructive)">zsh: command not found: ${parts[0]}. Type <span style="color:var(--primary)">'help'</span> for available commands.</div>`;
         }
 
         output.innerHTML = `
           <div style="margin-bottom:0.4rem;">
-            <span style="color:var(--purple)">❯</span> <span style="color:var(--fg)">${cmd}</span>
+            <span style="color:var(--primary)">❯</span> <span style="color:var(--fg)">${cmd}</span>
           </div>
           <div style="margin-bottom:0.75rem; padding-left:0.75rem; border-left:2px solid var(--border);">${res}</div>
         `;
